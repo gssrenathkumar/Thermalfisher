@@ -9,7 +9,7 @@ model_paths = {
     'LightGBM': 'pickle_file/best_lgbm_model.pkl',
     # 'Random Forest': 'pickle_file/best_rf_model.pkl'
 }
-csv_file_path = 'clusteR_family_reshare.csv'
+csv_file_path = 'cluster_family_reshare.csv'
 
 # Load all models
 models = {name: pickle.load(open(path, 'rb')) for name, path in model_paths.items()}
