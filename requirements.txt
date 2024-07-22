@@ -2,5 +2,6 @@ streamlit==1.21.0
 pandas==1.5.3
 scikit-learn==1.2.2
 catboost==1.2.5
-lightgbm==3.3.5
+lightgbm
 numpy==1.24.3
+
