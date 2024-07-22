@@ -3,48 +3,22 @@ import pandas as pd
 import pickle
 from sklearn.preprocessing import LabelEncoder
 
-# Paths to your models
+# Paths to your models and CSV file
 model_paths = {
     'CatBoost': 'pickle_file/best_catboost_model.pkl',
     'LightGBM': 'pickle_file/best_lgbm_model.pkl',
     # 'Random Forest': 'pickle_file/best_rf_model.pkl'
 }
+csv_file_path = 'clusteR_family_reshare.csv'
 
 # Load all models
 models = {name: pickle.load(open(path, 'rb')) for name, path in model_paths.items()}
 
+# Load the CSV file
+df_clusters = pd.read_csv(csv_file_path)
+
 # List of old_node_type values
-old_node_types = [
-    'c5a.4xlarge', 'c5.4xlarge', 'c5d.2xlarge', 'c6g.8xlarge', 'c6id.2xlarge',
-    'c5d.12xlarge', 'c6g.2xlarge', 'c5d.xlarge', 'c5.xlarge', 'c6g.4xlarge',
-    'c5d.9xlarge', 'c6i.xlarge', 'c6gd.2xlarge', 'c6id.4xlarge', 'c6id.xlarge',
-    'c5a.2xlarge', 'c6g.xlarge', 'c7gd.xlarge', 'c6gd.xlarge', 'c5a.8xlarge',
-    'c7gd.4xlarge', 'c5d.24xlarge', 'c6gd.8xlarge', 'c5.9xlarge', 'c6gd.16xlarge',
-    'c5.2xlarge', 'c6i.8xlarge', 'c5.12xlarge', 'c6id.8xlarge', 'c6in.8xlarge',
-    'c5d.4xlarge', 'c6gd.12xlarge', 'c4.2xlarge', 'c4.8xlarge', 'c4.4xlarge',
-    'c6gd.4xlarge', 'i3.16xlarge', 'i4i.large', 'i4i.4xlarge', 'i4i.xlarge',
-    'i3.8xlarge', 'i3.xlarge', 'i3.2xlarge', 'i4i.16xlarge', 'i3.4xlarge',
-    'm5d.xlarge', 'm5d.16xlarge', 'm5dn.4xlarge', 'm6g.4xlarge', 'm6gd.4xlarge',
-    'm5.2xlarge', 'm7gd.4xlarge', 'm6id.4xlarge', 'm7g.xlarge', 'm6gd.8xlarge',
-    'm5n.2xlarge', 'm5d.12xlarge', 'm6id.8xlarge', 'm5.4xlarge', 'm7gd.8xlarge',
-    'm6i.2xlarge', 'm5a.4xlarge', 'm6g.8xlarge', 'm7gd.large', 'm6gd.xlarge',
-    'm5d.large', 'm5a.24xlarge', 'm5d.24xlarge', 'm6gd.2xlarge', 'm5dn.16xlarge',
-    'm7gd.xlarge', 'm6gd.16xlarge', 'm6in.4xlarge', 'm6gd.12xlarge', 'm4.large',
-    'm4.4xlarge', 'm7g.large', 'm4.xlarge', 'm6g.large', 'm7g.2xlarge',
-    'm6g.xlarge', 'm4.2xlarge', 'm4.16xlarge', 'm5.xlarge', 'm6i.large',
-    'm7gd.2xlarge', 'm5.large', 'm5d.2xlarge', 'm5d.8xlarge', 'm6id.xlarge',
-    'm5a.large', 'm5.8xlarge', 'm7g.4xlarge', 'm6id.2xlarge', 'm5dn.large',
-    'm6gd.large', 'm6g.2xlarge', 'm6id.large', 'm6i.4xlarge', 'm5d.4xlarge',
-    'r6gd.xlarge', 'r6id.32xlarge', 'r7gd.4xlarge', 'r6id.8xlarge', 'r6id.4xlarge',
-    'r6id.xlarge', 'r6gd.8xlarge', 'r7g.large', 'r7g.xlarge', 'r5d.xlarge',
-    'r5dn.xlarge', 'r5dn.4xlarge', 'r5dn.large', 'r7g.2xlarge', 'r4.4xlarge',
-    'r6id.2xlarge', 'r5.xlarge', 'r5.large', 'r6gd.large', 'r6gd.4xlarge',
-    'r6g.2xlarge', 'r7g.4xlarge', 'r4.2xlarge', 'r5d.2xlarge', 'r6i.4xlarge',
-    'r5d.large', 'r6g.xlarge', 'r4.xlarge', 'r6i.2xlarge', 'r5.4xlarge',
-    'r5d.8xlarge', 'r7gd.2xlarge', 'r7gd.xlarge', 'r6g.large', 'r6i.xlarge',
-    'r6g.4xlarge', 'r6gd.2xlarge', 'r6i.large', 'r4.8xlarge', 'r5.2xlarge',
-    'r7gd.8xlarge', 'r7gd.16xlarge', 'r5d.4xlarge'
-]
+old_node_types = df_clusters['Instance Name'].tolist()
 
 # Mapping from numerical cluster IDs to cluster names
 cluster_mapping = {
@@ -129,9 +103,22 @@ selected_model = models[selected_model_name]
 cpu_user_percent = st.number_input("CPU User Percent", min_value=0.0, max_value=100.0, value=0.0)
 mem_used_percent = st.number_input("Memory Used Percent", min_value=0.0, max_value=100.0, value=0.0)
 old_node_type = st.selectbox("Old Node Type", old_node_types)
-old_core_count = st.number_input("Old Core Count", min_value=0, value=0)
-old_memory_mb = st.number_input("Old Memory MB", min_value=0, value=0)
-old_cost = st.number_input("Old Cost", min_value=0.0, value=0.0)
+
+# Extract values from the CSV file based on selected old_node_type
+selected_row = df_clusters[df_clusters['Instance Name'] == old_node_type]
+if not selected_row.empty:
+    old_core_count = selected_row['core_count'].values[0]
+    old_memory_mb = selected_row['memory_mb'].values[0]
+    old_cost = selected_row['On Demand Hourly Cost'].values[0]
+else:
+    old_core_count = 0
+    old_memory_mb = 0
+    old_cost = 0
+
+# Input fields for core count, memory, and cost (disabled for editing)
+old_core_count = st.number_input("Old Core Count", value=old_core_count, disabled=True)
+old_memory_mb = st.number_input("Old Memory MB", value=old_memory_mb, disabled=True)
+old_cost = st.number_input("Old Cost", value=old_cost, disabled=True)
 
 # Predict button
 if st.button("Predict"):
@@ -148,3 +135,16 @@ if st.button("Predict"):
     cluster_name = cluster_mapping.get(cluster_id, 'Unknown Cluster')
     
     st.write(f"Predicted Suitable Cluster: {cluster_name}")
+    
+    # Extract details for the predicted cluster
+    predicted_row = df_clusters[df_clusters['Instance Name'] == cluster_name]
+    if not predicted_row.empty:
+        new_core_count = predicted_row['core_count'].values[0]
+        new_memory_mb = predicted_row['memory_mb'].values[0]
+        new_cost = predicted_row['On Demand Hourly Cost'].values[0]
+        
+        st.write(f"New Core Count: {new_core_count}")
+        st.write(f"New Memory MB: {new_memory_mb}")
+        st.write(f"New Cost: {new_cost}")
+    else:
+        st.write("Details for the predicted cluster are not available.")
