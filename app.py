@@ -7,7 +7,7 @@ from sklearn.preprocessing import LabelEncoder
 model_paths = {
     'CatBoost': 'pickle_file/best_catboost_model.pkl',
     'LightGBM': 'pickle_file/best_lgbm_model.pkl',
-    'Random Forest': 'pickle_file/best_rf_model.pkl'
+    # 'Random Forest': 'pickle_file/best_rf_model.pkl'
 }
 
 # Load all models
