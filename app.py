@@ -149,7 +149,7 @@ if st.button("Predict"):
     # Display cost details in a table
         cost_data = {
             'Cost Type': ['AWS Cost', 'Databricks Cost'],
-            'Cost ($)': [aws_cost, databricks_cost]
+            'Cost ($)': [predicted_row['On Demand Hourly Cost'].values[0], predicted_row['DBU / Hour'].values[0]]
         }
         cost_df = pd.DataFrame(cost_data)
         st.table(cost_df)
