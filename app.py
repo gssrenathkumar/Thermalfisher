@@ -149,9 +149,29 @@ if st.button("Predict"):
     # Display cost details in a table
         cost_data = {
             'Cost Type': ['AWS Cost', 'Databricks Cost'],
-            'Cost ($)': [predicted_row['On Demand Hourly Cost'].values[0], predicted_row['DBU / Hour'].values[0]]
+            'Cost': [predicted_row['On Demand Hourly Cost'].values[0], predicted_row['DBU / Hour'].values[0]]
         }
         cost_df = pd.DataFrame(cost_data)
         st.table(cost_df)
+        # Display the comparison table without index
+        st.table(comparison_df.style.hide(axis='index'))
+
+        # Calculate the difference and percentage saved
+        difference = old_cost - new_cost
+        percentage_saved = (difference / old_cost) * 100 if old_cost != 0 else 0
+        
+        # Create a DataFrame for the comparison table
+        comparison_data = {
+            'Old Cost ($)': [old_cost],
+            'New Cost ($)': [new_cost],
+            'Difference ($)': [difference],
+            'Cost Saved (%)': [percentage_saved]
+        }
+        comparison_df = pd.DataFrame(comparison_data)
+        # Display the comparison table without index
+        st.table(comparison_df.style.hide(axis='index'))
+        
+        # Display the comparison table
+        st.table(comparison_df)
     else:
         st.write("Details for the predicted cluster are not available.")
