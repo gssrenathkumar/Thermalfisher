@@ -152,9 +152,10 @@ if st.button("Predict"):
             'Cost': [predicted_row['On Demand Hourly Cost'].values[0], predicted_row['DBU / Hour'].values[0]]
         }
         cost_df = pd.DataFrame(cost_data)
-        st.table(cost_df)
         # Display the comparison table without index
-        st.table(comparison_df.style.hide(axis='index'))
+        st.table(cost_df.style.hide(axis='index'))
+        st.table(cost_df)
+        
 
         # Calculate the difference and percentage saved
         difference = old_cost - new_cost
@@ -169,6 +170,8 @@ if st.button("Predict"):
         }
         comparison_df = pd.DataFrame(comparison_data)
         
+        # Display the comparison table without index
+        st.table(comparison_df.style.hide(axis='index'))
         # Display the comparison table
         st.table(comparison_df)
     else:
