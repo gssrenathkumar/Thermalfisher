@@ -146,5 +146,12 @@ if st.button("Predict"):
         st.write(f"New Core Count: {new_core_count}")
         st.write(f"New Memory MB: {new_memory_mb}")
         st.write(f"New Cost: {new_cost}")
+    # Display cost details in a table
+        cost_data = {
+            'Cost Type': ['AWS Cost', 'Databricks Cost'],
+            'Cost ($)': [aws_cost, databricks_cost]
+        }
+        cost_df = pd.DataFrame(cost_data)
+        st.table(cost_df)
     else:
         st.write("Details for the predicted cluster are not available.")
