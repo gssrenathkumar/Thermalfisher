@@ -168,8 +168,6 @@ if st.button("Predict"):
             'Cost Saved (%)': [percentage_saved]
         }
         comparison_df = pd.DataFrame(comparison_data)
-        # Display the comparison table without index
-        st.table(comparison_df.style.hide(axis='index'))
         
         # Display the comparison table
         st.table(comparison_df)
