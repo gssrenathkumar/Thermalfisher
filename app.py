@@ -109,7 +109,7 @@ selected_row = df_clusters[df_clusters['Instance Name'] == old_node_type]
 if not selected_row.empty:
     old_core_count = selected_row['core_count'].values[0]
     old_memory_mb = selected_row['memory_mb'].values[0]
-    old_cost = selected_row['On Demand Hourly Cost'].values[0]
+    old_cost = selected_row['On Demand Hourly Cost'].values[0] + selected_row['DBU / Hour'].values[0]
 else:
     old_core_count = 0
     old_memory_mb = 0
@@ -152,8 +152,6 @@ if st.button("Predict"):
             'Cost': [predicted_row['On Demand Hourly Cost'].values[0], predicted_row['DBU / Hour'].values[0]]
         }
         cost_df = pd.DataFrame(cost_data)
-        # Display the comparison table without index
-        st.table(cost_df.style.hide(axis='index'))
         st.table(cost_df)
         
 
@@ -169,9 +167,6 @@ if st.button("Predict"):
             'Cost Saved (%)': [percentage_saved]
         }
         comparison_df = pd.DataFrame(comparison_data)
-        
-        # Display the comparison table without index
-        st.table(comparison_df.style.hide(axis='index'))
         # Display the comparison table
         st.table(comparison_df)
     else:
