@@ -68,6 +68,9 @@ def preprocess_input(cpu_user_percent, mem_used_percent, old_node_type, old_core
 # Streamlit UI
 st.title("Cluster Suitability Prediction")
 
+# Disabled input box for the model
+st.text_input("Selected Model", value="CatBoost", disabled=True)
+
 # Input fields
 cpu_user_percent = st.number_input("CPU User Percent", min_value=0.0, max_value=100.0, value=0.0)
 mem_used_percent = st.number_input("Memory Used Percent", min_value=0.0, max_value=100.0, value=0.0)
@@ -84,10 +87,10 @@ else:
     old_memory_mb = 0
     old_cost = 0
 
-# Input fields for core count, memory, and cost (disabled for editing)
-old_core_count = st.number_input("Old Core Count", value=old_core_count, disabled=True)
-old_memory_mb = st.number_input("Old Memory MB", value=old_memory_mb, disabled=True)
-old_cost = st.number_input("Old Cost", value=old_cost, disabled=True)
+# Display core count, memory, and cost as read-only text boxes
+st.text_input("Old Core Count", value=old_core_count, disabled=True)
+st.text_input("Old Memory MB", value=old_memory_mb, disabled=True)
+st.text_input("Old Cost", value=old_cost, disabled=True)
 
 # Predict button
 if st.button("Predict"):
