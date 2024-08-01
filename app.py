@@ -6,7 +6,7 @@ from sklearn.preprocessing import LabelEncoder
 # Paths to your models and CSV file
 model_paths = {
     'CatBoost': 'pickle_file/best_catboost_model.pkl',
-    'LightGBM': 'pickle_file/best_lgbm_model.pkl',
+    # 'LightGBM': 'pickle_file/best_lgbm_model.pkl',
     # 'Random Forest': 'pickle_file/best_rf_model.pkl'
 }
 csv_file_path = 'cluster_family_reshare.csv'
@@ -141,7 +141,7 @@ if st.button("Predict"):
     if not predicted_row.empty:
         new_core_count = predicted_row['core_count'].values[0]
         new_memory_mb = predicted_row['memory_mb'].values[0]
-        new_cost = predicted_row['On Demand Hourly Cost'].values[0] + predicted_row['DBU / Hour'].values[0]
+        new_cost = round(predicted_row['On Demand Hourly Cost'].values[0] + predicted_row['DBU / Hour'].values[0], 2)
         
         st.write(f"New Core Count: {new_core_count}")
         st.write(f"New Memory MB: {new_memory_mb}")
